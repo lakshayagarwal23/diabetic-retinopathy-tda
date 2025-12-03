@@ -447,6 +447,11 @@ topology with deep visual representations and suggest that
 topology-guided attention mechanisms offer a promising pathway toward
 more reliable and clinically aligned DR screening systems.
 
+## Video
+
+The link for the video explanation: 
+https://youtu.be/bsRGb9Ps4cI?si=HEEpWepXl7w4YPm9
+
 **Bibliography:**
 
 \[1\] Taher, Muhammad. \"The challenges of using Escherichia coli as a
