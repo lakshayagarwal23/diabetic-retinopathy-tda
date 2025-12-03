@@ -1,4 +1,4 @@
-Multi-Class Grading of Diabetic Retinopathy Severity
+# Multi-Class Grading of Diabetic Retinopathy Severity
 
 Diabetic Retinopathy (DR) is a progressive complication of diabetes in
 which high blood sugar damages the retina's blood vessels, leading to
@@ -37,7 +37,7 @@ dominated by single CNN models such as AlexNet, VGG, DenseNet, and
 ResNet. These architectures brought powerful representation learning to
 medical imaging, but initially struggled with the nuances of DR grading.
 
-- Accuracy plateaued around 50--52% for 5-class DR grading \[4\].
+- Accuracy plateaued around 50-52% for 5-class DR grading \[4\].
 
 - CNNs often failed to capture small subtle lesions.
 
@@ -103,7 +103,7 @@ datasets, including APTOS (AUC 95.0%, accuracy 80%), OCT-HAMD (AUC
 study demonstrates that TDA provides discriminative global features that
 complement local pixel-based CNN filters.
 
-**Dataset**
+## Dataset
 
 This study utilizes the APTOS 2019 Blindness Detection dataset, provided
 by the Asia Pacific Tele-Ophthalmology Society (APTOS) in collaboration
@@ -111,23 +111,17 @@ with Aravind Eye Hospital (India). The dataset contains 3,662 color
 fundus photographs, each labeled according to a five-stage diabetic
 retinopathy (DR) severity scale:
 
-  ------------------------------------------------------------------------
-  Class       Description                 Number of Images
-  ----------- --------------------------- --------------------------------
-  0           No DR                       1,805
+| Class | Description       | Number of Images |
+|-|-|-|
+| 0     | No DR             | 1,805            |
+| 1     | Mild DR           | 370              |
+| 2     | Moderate DR       | 999              |
+| 3     | Severe DR         | 193              |
+| 4     | Proliferative DR  | 295              |
 
-  1           Mild DR                     370
+   *Aptos 2019 Dataset Class Distribution*
 
-  2           Moderate DR                 999
-
-  3           Severe DR                   193
-
-  4           Proliferative DR            295
-  ------------------------------------------------------------------------
-
-### *Aptos 2019 Dataset Class Distribution*
-
-### **Challenges**
+## Challenges
 
 The dataset presents two significant challenges:
 
@@ -140,7 +134,7 @@ The dataset presents two significant challenges:
     Image sizes range from 474×358 to 3388×2588, requiring careful
     preprocessing for consistent downstream analysis.
 
-**Preprocessing Pipeline**
+## Preprocessing Pipeline
 
 a.  Load and Resize
 
@@ -181,16 +175,15 @@ e.  Intensity Normalization
 
 - Two normalization steps are applied within the retinal mask:
 
-1.  Z-score normalization\
-    ![](./media/media/image4.png){width="1.5416666666666667in"
-    height="0.6770833333333334in"}\
-    This standardizes illumination variations across images.
+1.  Z-score normalization
 
-2.  Min--Max scaling to \[0, 1\]
+This standardizes illumination variations across images.
 
-> ![](./media/media/image8.png){width="1.806700568678915in"
-> height="0.680663823272091in"}\
-> Required for numerical stability in persistent homology calculations.
+2.  Min-Max scaling to \[0, 1\]
+
+
+
+Required for numerical stability in persistent homology calculations.
 
 f.  Topology Construction: Once preprocessed, the normalized
     green-channel image is used to construct the topological
@@ -209,7 +202,7 @@ f.  Topology Construction: Once preprocessed, the normalized
   - H₁ (1-dimensional): loops, rings, circular structures\
     (relevant for microaneurysms and vascular patterns)
 
-<!-- -->
+
 
 - Persistence Diagrams: Each topological feature is plotted as a point
   (bi,di), representing its birth and death times. Points far from the
@@ -231,15 +224,12 @@ f.  Topology Construction: Once preprocessed, the normalized
   - This persistence image becomes the TDA input to the CNN's
     topology-aware attention module.
 
-![](./media/media/image9.png){width="6.364583333333333in"
-height="3.3229166666666665in"}
 
 *Preprocessing Pipeline*
 
-**Architecture**
+## Architecture
 
-![](./media/media/image11.png){width="6.5in"
-height="3.638888888888889in"}
+
 
 *Proposed Architecture*
 
@@ -250,7 +240,7 @@ structural reasoning. Together, these modules aim to enhance both the
 **accuracy** and **interpretability** of diabetic retinopathy (DR)
 grading by integrating intensity-based and topology-aware information.
 
-### **CNN Branch --- Visual Feature Extraction**
+### CNN Branch - Visual Feature Extraction
 
 The upper branch of the architecture processes the RGB fundus image,
 resized to **3×256×256**, using a **pre-trained EfficientNet-B0**
@@ -258,17 +248,16 @@ backbone. The network consists of an initial **stem convolution** layer
 followed by multiple **mobile inverted bottleneck (MBConv) blocks** with
 ReLU activations.\
 These layers progressively capture both local and global retinal
-patterns---such as blood vessel structure, microaneurysms, and optic
-disc textures---resulting in a dense feature representation denoted as:
+patterns-such as blood vessel structure, microaneurysms, and optic
+disc textures-resulting in a dense feature representation denoted as:
 
-![](./media/media/image7.png){width="1.0052088801399826in"
-height="0.2571467629046369in"}
+
 
 For EfficientNet-B0, **C = 1280** and **H = W = 8**. This feature tensor
 Fi serves as a compact encoding of the retinal image, preserving
 essential spatial semantics while reducing dimensionality.
 
-### **TDA Branch --- Topological Feature Extraction**
+### TDA Branch - Topological Feature Extraction
 
 In parallel, the lower branch performs **topological analysis** on the
 **green channel** of the same fundus image, which provides the highest
@@ -279,12 +268,10 @@ to suppress peripheral noise and emphasize vascular connectivity.
 
 Subsequently, a **persistence diagram (PD)** is computed using *Cubical
 Complexes* to characterize the topological features of the
-image---namely, connected components (H₀) and loops (H₁).\
+image-namely, connected components (H₀) and loops (H₁).\
 The persistence diagram is then transformed into a **persistence image
 (PI)**, a fixed-size 2D grid representation:
 
-![](./media/media/image2.png){width="0.9947922134733158in"
-height="0.21212489063867015in"}
 
 This persistence image acts as a **topological mask**, encoding
 geometric relationships among vessels and lesions.\
@@ -293,28 +280,26 @@ module, which applies **max pooling**, **average pooling**, and **1×1
 convolution** followed by a **sigmoid activation** to generate a **soft
 attention map** aligned with the CNN feature space.
 
-### **TGSA Integration --- Attention Fusion**
+### TGSA Integration - Attention Fusion
 
 The soft attention map from the TDA branch is **element-wise
 multiplied** with the CNN feature map FiFi​ to generate topologically
 refined representations:
 
-![](./media/media/image6.png){width="2.119792213473316in"
-height="0.40889435695538057in"}
+
 
 This operation reweights the CNN features according to the topological
 significance of regions within the image, ensuring that the model
-focuses on diagnostically relevant structures---such as vessel loops,
-hemorrhages, and microaneurysms---while suppressing irrelevant
+focuses on diagnostically relevant structures-such as vessel loops,
+hemorrhages, and microaneurysms-while suppressing irrelevant
 high-contrast areas like the optic disc.
 
-### **Loss Functions**
+### Loss Functions
 
 The model is trained using a **dual-objective loss function** that
 balances classification performance with topological alignment:
 
-![](./media/media/image5.png){width="1.7239588801399826in"
-height="0.3038123359580053in"}
+
 
 where
 
@@ -328,15 +313,15 @@ The second term encourages the CNN to align its focus with clinically
 meaningful topological regions. The weighting factor λ=1.0 ensures both
 objectives contribute equally to learning.
 
-### **Final Classification**
+### Final Classification
 
 The topology-refined feature map Fi′ is passed through a
 **post-convolutional block**, followed by **global average pooling** and
 a **fully connected layer**.\
 A **softmax layer** outputs the final probability distribution across
-the **five DR grades (0--4)**, representing increasing disease severity.
+the **five DR grades (0-4)**, representing increasing disease severity.
 
-**Results**
+## Results
 
 The performance of the proposed topology-guided CNN model was evaluated
 on the APTOS-2019 test set and compared against Topo-Net. Results
@@ -365,12 +350,11 @@ indicates very high agreement between predicted and true severity
 grades, outperforming both traditional CNNs and prior TDA-based
 approaches.
 
-![](./media/media/image10.png){width="2.9996434820647417in"
-height="1.012866360454943in"}
+
 
 *Proposed Architecture Test Metrics*
 
-The model performs best on the "No_DR" and "Moderate" classes, which
+The model performs best on the "No DR" and "Moderate" classes, which
 constitute the largest subsets of the dataset. Mild DR shows moderate
 recall but lower precision, reflecting the inherent difficulty of
 detecting small early-stage lesions. Severe and proliferative DR classes
@@ -386,7 +370,7 @@ particularly in QWK and overall accuracy. The integration of persistent
 homology as a spatial attention prior appears to enhance lesion
 localization and improve ordinal classification reliability.
 
-**Novelty:**
+## Novelty
 
 This work introduces three key innovations that differentiate it from
 prior diabetic retinopathy (DR) classification models.
@@ -401,18 +385,16 @@ extraction. In contrast, the proposed method introduces a
 **topology-conditioned spatial attention mechanism**, in which the
 persistence image directly modulates convolutional activations:
 
-![](./media/media/image1.png){width="3.7656255468066493in"
-height="0.34375in"}
 
-This design enables topological information---such as loops, rings, and
-vascular structures---to act as a **prior** that guides the CNN's focus
+This design enables topological information-such as loops, rings, and
+vascular structures-to act as a **prior** that guides the CNN's focus
 to structurally meaningful retinal regions. Rather than serving as an
 auxiliary descriptor, topology becomes an integral, learned component of
 the feature extraction process.
 
 **Green Channel Preprocessing**
 
-Use of green-channel--based preprocessing to enhance early-stage lesions
+Use of green-channel-based preprocessing to enhance early-stage lesions
 prior to both TDA and CNN analysis. Ophthalmologists routinely employ
 green-filtered imaging to improve visibility of microaneurysms and
 hemorrhages by attenuating red light. Integrating this principle
@@ -427,12 +409,11 @@ Mixup is incorporated to mitigate dataset imbalance and overfitting. New
 training samples are generated via convex combinations of image pairs
 and their labels:
 
-![](./media/media/image3.png){width="6.5in"
-height="0.5555555555555556in"}
 
-**Conclusion**
 
-This work presents a hybrid TDA--CNN framework for diabetic retinopathy
+## Conclusion
+
+This work presents a hybrid TDA-CNN framework for diabetic retinopathy
 classification that integrates domain-informed preprocessing,
 topological feature extraction, and topology-guided spatial attention.
 By leveraging the green channel to enhance lesion visibility, using
@@ -497,5 +478,5 @@ artificial intelligence.\" Scientific Reports 15, no. 1 (2025):
 [\[9\] Moon, J. Y., K. M. Wai, N. S. Patel, R. Katz, M. Dahrouj, and J.
 B. Miller. "Visualization of Retinal Breaks on Ultra-Widefield Fundus
 Imaging Using a Digital Green Filter." Graefe's Archive for Clinical and
-Experimental Ophthalmology 261, no. 4 (2023): 935--40.
+Experimental Ophthalmology 261, no. 4 (2023): 935-40.
 https://doi.org/10.1007/s00417-022-05855-8.]{.mark}
