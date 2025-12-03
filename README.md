@@ -452,6 +452,11 @@ more reliable and clinically aligned DR screening systems.
 The link for the video explanation: 
 https://youtu.be/bsRGb9Ps4cI?si=HEEpWepXl7w4YPm9
 
+## How to Run
+
+To execute the project, run the following file:
+
+[`FINAL.ipynb`](./FINAL.ipynb)
 ## Bibliography
 
 \[1\] Taher, Muhammad. \"The challenges of using Escherichia coli as a
