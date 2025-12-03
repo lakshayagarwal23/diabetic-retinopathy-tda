@@ -176,12 +176,15 @@ e.  Intensity Normalization
 - Two normalization steps are applied within the retinal mask:
 
 1.  Z-score normalization
-
+<p align="center">
+  <img src="image1.png" width="300">
+  
 This standardizes illumination variations across images.
 
 2.  Min-Max scaling to \[0, 1\]
 
-
+<p align="center">
+  <img src="image2.png" width="300">
 
 Required for numerical stability in persistent homology calculations.
 
@@ -224,12 +227,15 @@ f.  Topology Construction: Once preprocessed, the normalized
   - This persistence image becomes the TDA input to the CNN's
     topology-aware attention module.
 
+<p align="center">
+  <img src="image3.png" width="900">
 
 *Preprocessing Pipeline*
 
 ## Architecture
 
-
+<p align="center">
+  <img src="image4.png" width="900">
 
 *Proposed Architecture*
 
@@ -246,12 +252,14 @@ The upper branch of the architecture processes the RGB fundus image,
 resized to **3×256×256**, using a **pre-trained EfficientNet-B0**
 backbone. The network consists of an initial **stem convolution** layer
 followed by multiple **mobile inverted bottleneck (MBConv) blocks** with
-ReLU activations.\
+ReLU activations.
+
 These layers progressively capture both local and global retinal
 patterns-such as blood vessel structure, microaneurysms, and optic
 disc textures-resulting in a dense feature representation denoted as:
 
-
+<p align="center">
+  <img src="image5.png" width="300">
 
 For EfficientNet-B0, **C = 1280** and **H = W = 8**. This feature tensor
 Fi serves as a compact encoding of the retinal image, preserving
@@ -272,6 +280,8 @@ image-namely, connected components (H₀) and loops (H₁).\
 The persistence diagram is then transformed into a **persistence image
 (PI)**, a fixed-size 2D grid representation:
 
+<p align="center">
+  <img src="image6.png" width="300">
 
 This persistence image acts as a **topological mask**, encoding
 geometric relationships among vessels and lesions.\
@@ -286,7 +296,8 @@ The soft attention map from the TDA branch is **element-wise
 multiplied** with the CNN feature map FiFi​ to generate topologically
 refined representations:
 
-
+<p align="center">
+  <img src="image7.png" width="300">
 
 This operation reweights the CNN features according to the topological
 significance of regions within the image, ensuring that the model
@@ -299,7 +310,8 @@ high-contrast areas like the optic disc.
 The model is trained using a **dual-objective loss function** that
 balances classification performance with topological alignment:
 
-
+<p align="center">
+  <img src="image8.png" width="300">
 
 where
 
@@ -350,6 +362,8 @@ indicates very high agreement between predicted and true severity
 grades, outperforming both traditional CNNs and prior TDA-based
 approaches.
 
+<p align="center">
+  <img src="image9.png" width="500">
 
 
 *Proposed Architecture Test Metrics*
@@ -385,6 +399,8 @@ extraction. In contrast, the proposed method introduces a
 **topology-conditioned spatial attention mechanism**, in which the
 persistence image directly modulates convolutional activations:
 
+<p align="center">
+  <img src="image10.png" width="300">
 
 This design enables topological information-such as loops, rings, and
 vascular structures-to act as a **prior** that guides the CNN's focus
@@ -409,6 +425,8 @@ Mixup is incorporated to mitigate dataset imbalance and overfitting. New
 training samples are generated via convex combinations of image pairs
 and their labels:
 
+<p align="center">
+  <img src="image11.png" width="700">
 
 
 ## Conclusion
